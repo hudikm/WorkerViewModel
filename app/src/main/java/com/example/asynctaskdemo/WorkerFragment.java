@@ -38,8 +38,8 @@ public class WorkerFragment extends Fragment {
 
 
     @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onPause() {
+        super.onPause();
         recyclerView = null;
     }
 
