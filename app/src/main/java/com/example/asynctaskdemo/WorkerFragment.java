@@ -56,8 +56,8 @@ public class WorkerFragment extends Fragment {
             int i = 0;
             while (true) {
                 try {
-                    Thread.sleep(1000);
                     publishProgress(i++);
+                    Thread.sleep(1000);
                     if (isCancelled()) return null;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -69,8 +69,12 @@ public class WorkerFragment extends Fragment {
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            myRecyclerViewAdapter.getData().add(values[0]);
-            myRecyclerViewAdapter.notifyDataSetChanged();
+            if (myRecyclerViewAdapter != null) {
+                myRecyclerViewAdapter.getData().add(values[0]);
+                myRecyclerViewAdapter.notifyDataSetChanged();
+            } else {
+                data.add(values[0]);
+            }
         }
     }
 
