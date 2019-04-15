@@ -1,7 +1,7 @@
 package com.example.asynctaskdemo;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +13,8 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private List<Integer> data;
 
-    public MyRecyclerViewAdapter(List<Integer> data) {
-        this.data = data;
+    public MyRecyclerViewAdapter() {
+
     }
 
     @NonNull
@@ -28,12 +28,12 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        ((TextView)viewHolder.itemView).setText(data.get(i).toString());
+        ((TextView) viewHolder.itemView).setText(data.get(i).toString());
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return data == null ? 0 : data.size();
     }
 
     public List<Integer> getData() {
@@ -42,5 +42,6 @@ public class MyRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setData(List<Integer> data) {
         this.data = data;
+        notifyDataSetChanged();
     }
 }

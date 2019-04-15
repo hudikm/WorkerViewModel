@@ -1,11 +1,19 @@
 package com.example.asynctaskdemo;
 
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
+
+import java.util.List;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,18 +21,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list);
+
+        final RecyclerView recyclerView = findViewById(R.id.list);
+
+        final MyRecyclerViewAdapter myRecyclerViewAdapter = new MyRecyclerViewAdapter();
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(myRecyclerViewAdapter);
 
-        WorkerFragment workerFragment = (WorkerFragment) getSupportFragmentManager().findFragmentByTag("WorkerFragment");
-        if (workerFragment == null) {
-            workerFragment = new WorkerFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .add(workerFragment, "WorkerFragment")
-                    .commit();
+        // Najdenie instancie workViewModel triedy
+        WorkerViewModel workerViewModel = ViewModelProviders.of(this).get(WorkerViewModel.class);
 
-            workerFragment.runAsyncTask();
-        }
+        LiveData<List<Integer>> liveData = workerViewModel.getMutableLiveData();
+
+        myRecyclerViewAdapter.setData(liveData.getValue());
+
+        // Vytvorenie observera, ktory reaguje na zmenu dat.
+        liveData.observe(this, new Observer<List<Integer>>() {
+            @Override
+            public void onChanged(List<Integer> integers) {
+                myRecyclerViewAdapter.setData(integers);
+            }
+        });
+        workerViewModel.runAsyncTask();
+
 
     }
 }
